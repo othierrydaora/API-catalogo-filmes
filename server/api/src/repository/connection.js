@@ -2,9 +2,9 @@ import mysql from 'mysql2/promise';
 
 const con = await mysql.createConnection({
     host: process.env.MYSQL_HOST,
-    user: 'root',
-    password: '1234',
-    database: 'infob_catalogofilmesdb'
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PWD,
+    database: process.env.MYSQL_DB
 });
 
 export { con };
