@@ -69,3 +69,18 @@ export async function deletarFilme(id) {
     console.log(rsp.affectedRows)
     return rsp.affectedRows;
 }
+
+export async function alterarFilme (id, movie) {
+    const comando = 
+    `UPDATE tb_filme 
+        SET nm_filme      = ?,
+            ds_sinopse    = ?,
+            vl_avaliacao  = ?,
+            dt_lancamento = ?,
+            bt_disponivel = ?,
+            id_usuario     =?
+     WHERE id_filme = ? `
+
+     const [resposta] = await con.query (comando, [movie.nome, movie.sinopse, movie.avaliacao, movie.lancamento, movie.disponivel, id]);
+     return resposta.affectedRows;
+}

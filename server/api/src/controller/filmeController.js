@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adicionarFilme, alterarImagem, buscarPorId, buscarPorNome, listarTodosFilmes, deletarFilme } from "../repository/filmeRepo.js";
+import { adicionarFilme, alterarImagem, buscarPorId, buscarPorNome, listarTodosFilmes, deletarFilme, alterarFilme } from "../repository/filmeRepo.js";
 import multer from 'multer'
 const upload = multer ({dest:'storage/capasFilmes'})
 
@@ -7,15 +7,15 @@ const server = Router();
 
 server.post('/filme', async (req, res) => {
     try {
-        const novoFilme = req.body;
+        const filme = req.body;
         
-        if (!novoFilme.nome) throw new Error('Nome do filme ée obrigatório');
-        if (!novoFilme.sinopse) throw new Error('Sinopse do filme é obrigatória');
-        if (novoFilme.avaliacao == undefined || novoFilme.avaliacao < 0) throw new Error('Avaliação inválida');
-        if (!novoFilme.lancamento) throw new Error('O lançamento é obrigatório');
-        if (novoFilme.disponivel == undefined) throw new Error('A disponibilidade é obigatória');
+        if (!filme.nome) throw new Error('Nome do filme ée obrigatório');
+        if (!filme.sinopse) throw new Error('Sinopse do filme é obrigatória');
+        if (filme.avaliacao == undefined || filme.avaliacao < 0) throw new Error('Avaliação inválida');
+        if (!filme.lancamento) throw new Error('O lançamento é obrigatório');
+        if (filme.disponivel == undefined) throw new Error('A disponibilidade é obigatória');
         
-        const filme = await adicionarFilme(novoFilme);
+        const filme = await adicionarFilme(filme);
         res.send(filme);
     } catch (err) {
         res.status(400).send({
@@ -95,5 +95,27 @@ server.delete('/filme/:id', async (req, res) => {
         });
     }
 });
+
+server.put('/2/movie/:id', async (req, resp) => {
+    try {
+        const { id } = req.params;
+        const movie = req.body;
+        if (!movie.nome) throw new Error('Nome do filme ée obrigatório');
+        if (!movie.sinopse) throw new Error('Sinopse do filme é obrigatória');
+        if (movie.avaliacao == undefined || movie.avaliacao < 0) throw new Error('Avaliação inválida');
+        if (!movie.lancamento) throw new Error('O lançamento é obrigatório');
+        if (movie.disponivel == undefined) throw new Error('A disponibilidade é obigatória');
+        if (!movie.usuario) throw new Error('Usuário não logado!');
+
+        const resposta = await alterarFilme(id, movie);
+        if (resposta != 1)throw new Error ('Filme não pode ser alterado!');
+        else 
+        resp.status(204).send(); 
+    } catch(err) {
+        resp.status(400).send({
+            erro:err.message
+        })
+    }
+})
 
 export default server;
