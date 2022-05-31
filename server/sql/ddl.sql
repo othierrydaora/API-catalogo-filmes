@@ -1,6 +1,6 @@
-CREATE DATABASE catalogoFilmesDB;
+CREATE DATABASE infob_catalogoFilmesDB;
 
-USE catalogoFilmesDB;
+USE infob_catalogoFilmesDB;
 
 CREATE TABLE tb_usuario (
 	id_usuario		int primary key auto_increment,
@@ -20,3 +20,10 @@ CREATE TABLE tb_filme (
     img_filme       varchar(800),
     FOREIGN KEY (id_usuario) REFERENCES tb_usuario (id_usuario)
 );
+--
+select id_usuario 		id,
+       nm_usuario		nome,
+       ds_email			email
+  from tb_usuario
+ where ds_email 		= 'adm@sudoers'
+   and ds_senha			= '1234';
