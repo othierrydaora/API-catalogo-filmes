@@ -33,3 +33,39 @@ export async function listarTodosFilmes() {
     const [ rows ] = await con.query(command);
     return rows;
 }
+
+export async function buscarPorNome (nome) {
+    const comando =  
+    `SELECT id_filme    id,
+    nm_filme            nome,
+    vl_avaliacao        avaliacao,
+    dt_lancamento       lancamento,
+    bt_disponivel       disponivel
+    FROM tb_filme
+    WHERE nm_filme like?`;
+
+    const [linhas] = await con.query (comando, [`%${nome}%`]);
+    return linhas;
+}
+
+export async function buscarPorId(id) {
+    const comando =  
+    `SELECT id_filme    id,
+    nm_filme            nome,
+    vl_avaliacao        avaliacao,
+    dt_lancamento       lancamento,
+    bt_disponivel       disponivel
+    FROM tb_filme
+    WHERE id_filme = ?`;
+    const [linhas] = await con.query (comando, [id]);
+    return linhas[0];
+}
+
+export async function deletarFilme(id) {
+    const command = `
+    DELETE FROM tb_filme
+          WHERE id_filme = ? `;
+    const [ rsp ] = await con.query(command, [id]);
+    console.log(rsp.affectedRows)
+    return rsp.affectedRows;
+}

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adicionarFilme, alterarImagem, listarTodosFilmes } from "../repository/filmeRepo.js";
+import { adicionarFilme, alterarImagem, buscarPorId, buscarPorNome, listarTodosFilmes, deletarFilme } from "../repository/filmeRepo.js";
 import multer from 'multer'
 const upload = multer ({dest:'storage/capasFilmes'})
 
@@ -45,6 +45,52 @@ server.get('/filmes', async (req, res) => {
         res.send(rst);
     } catch(err) {
         res.status(404).send({
+            Erro: err.message
+        });
+    }
+});
+
+server.get('/filme/busca', async (req, resp) => {
+    try{
+        const { nome } = req.query;
+        const resposta = await buscarPorNome(nome);
+        if (resposta.length==0) resp.status(404).send([])
+        else resp.send(resposta);
+    } catch(err) {
+        resp.status(400).send({
+            Erro:err.message
+        });
+    }
+});
+
+server.get('/filme/:id', async (req, res) => {
+    try{
+        const id = Number(req.params.id);
+        const resposta = await buscarPorId(id);
+
+        if (!resposta) res.status(404).send({
+            Erro: 'Não encontrado'
+        });
+        else res.send(resposta);
+
+    } catch(err) {
+        res.status(400).send({
+            Erro:err.message
+        });
+    }
+});
+
+server.delete('/filme/:id', async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const rsp = await deletarFilme(id);
+        
+        if (rsp != 1) res.status(400).send({
+            Erro: 'O filme não pode ser deletado'
+        });
+        res.status(204).send();
+    } catch (err) {
+        res.status(400).send({
             Erro: err.message
         });
     }
