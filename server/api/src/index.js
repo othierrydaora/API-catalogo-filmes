@@ -11,6 +11,6 @@ server.use(cors());
 server.use(express.json());
 server.use(userController);
 server.use(filmeController);
-
+server.use('/storage/capasFilmes', express.static('storage/capasFilmes'));
 
 server.listen(process.env.PORT, () => console.log(`server listening on ${process.env.PORT}`));
