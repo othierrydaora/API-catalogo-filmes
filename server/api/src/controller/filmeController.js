@@ -15,8 +15,8 @@ server.post('/filme', async (req, res) => {
         if (!filme.lancamento) throw new Error('O lançamento é obrigatório');
         if (filme.disponivel == undefined) throw new Error('A disponibilidade é obigatória');
         
-        const filme = await adicionarFilme(filme);
-        res.send(filme);
+        const answer = await adicionarFilme(filme);
+        res.send(answer);
     } catch (err) {
         res.status(400).send({
             Error: err.message
@@ -24,7 +24,7 @@ server.post('/filme', async (req, res) => {
     }
 });
 
-server.put('/filme/:id/capa', upload.single('capa'), async (req, resp) => {
+server.put('/filme/capa/:id', upload.single('capa'), async (req, resp) => {
     try{
         const { id } = req.params;
         const imagem = req.file.path;
@@ -96,11 +96,11 @@ server.delete('/filme/:id', async (req, res) => {
     }
 });
 
-server.put('/2/movie/:id', async (req, resp) => {
+server.put('/filme/alterar/:id', async (req, resp) => {
     try {
         const { id } = req.params;
         const movie = req.body;
-        if (!movie.nome) throw new Error('Nome do filme ée obrigatório');
+        if (!movie.nome) throw new Error('Nome do filme é obrigatório');
         if (!movie.sinopse) throw new Error('Sinopse do filme é obrigatória');
         if (movie.avaliacao == undefined || movie.avaliacao < 0) throw new Error('Avaliação inválida');
         if (!movie.lancamento) throw new Error('O lançamento é obrigatório');
@@ -108,14 +108,13 @@ server.put('/2/movie/:id', async (req, resp) => {
         if (!movie.usuario) throw new Error('Usuário não logado!');
 
         const resposta = await alterarFilme(id, movie);
-        if (resposta != 1)throw new Error ('Filme não pode ser alterado!');
-        else 
-        resp.status(204).send(); 
+        if (resposta != 1) throw new Error('Filme não pode ser alterado!');
+        else resp.status(204).send(); 
     } catch(err) {
         resp.status(400).send({
             erro:err.message
-        })
+        });
     }
-})
+});
 
 export default server;
